@@ -1,0 +1,64 @@
+{
+  "name": "@cocreate/figma",
+  "version": "1.0.0",
+  "description": "A simple figma component in vanilla javascript. Easily configured using HTML5 data-attributes and/or JavaScript API.",
+  "keywords": [
+    "figma",
+    "cocreate",
+    "low-code-framework",
+    "no-code-framework",
+    "cocreatejs",
+    "cocreatejs-component",
+    "cocreate-framework",
+    "no-code",
+    "low-code",
+    "collaborative-framework",
+    "realtime",
+    "realtime-framework",
+    "collaboration",
+    "shared-editing",
+    "html5-framework",
+    "javascript-framework"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "npm run build -- --watch",
+    "start": "npx webpack --config webpack.config.js",
+    "dev": "npx webpack --config webpack.config.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoCreate-app/CoCreate-figma.git"
+  },
+  "author": "CoCreate LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CoCreate-app/CoCreate-figma/issues"
+  },
+  "homepage": "https://cocreate.app/docs/figma",
+  "funding": {
+    "type": "GitHub Sponsors ❤",
+    "url": "https://github.com/sponsors/CoCreate-app"
+  },
+  "main": "./src/code.ts",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.34.1",
+    "@types/node": "^16.7.1",
+    "css-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.3.2",
+    "style-loader": "^3.2.1",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.3.5",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "@cocreate/docs": "^1.2.26",
+    "@cocreate/hosting": "^1.2.22",
+    "react-dev-utils": "^12.0.1"
+  }
+}

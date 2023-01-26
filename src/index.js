@@ -1,0 +1,1 @@
+console.log('message from src/index.js')

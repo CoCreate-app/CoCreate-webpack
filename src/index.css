@@ -1,0 +1,18 @@
+body {
+    font-family: 'Inter', sans-serif;
+    margin:0px;
+    background-color: var(--figma-color-bg);
+    color: var(--figma-color-text);
+    font-size: 11px;
+    overflow: overlay;
+}
+
+element {
+    display: none;
+}
+[show='element'] > element {
+    display: block;
+}
+[show='element'] > nav > [show='element'] {
+    color:#fff;
+}
