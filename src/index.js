@@ -1,4 +1,6 @@
 const fs = require('fs');
+const path = require('path');
+
 const upload = require('@cocreate/cli/src/commands/upload.js')
 
 class ModuleGenerator {
@@ -54,6 +56,7 @@ class ModuleGenerator {
         });
     }
 }
+
 class fileUploader {
     constructor(env) {
         this.env = env;
@@ -78,5 +81,39 @@ class fileUploader {
     }
 }
 
+class SymlinkCreator {
+    constructor(options) {
+        // Store options if necessary, or just hard-code paths
+    }
 
-module.exports = { ModuleGenerator, fileUploader };
+    apply(compiler) {
+        // Use compiler.hooks to tap into the Webpack build process
+        compiler.hooks.afterEmit.tap('SymlinkPlugin', (compilation) => {
+            // Perform symlink operations here
+            symlink('./dist', '../dist', 'dir');
+            symlink('./node_modules/@cocreate/pwa/src/service-worker.js', '../service-worker.js', 'file');
+            symlink('./node_modules/@cocreate/pwa/src/manifest.webmanifest', '../manifest.webmanifest', 'file');
+            symlink('./node_modules/@cocreate/pwa/src/offline.html', '../offline.html', 'file');
+        });
+
+        function symlink(target, destination, option) {
+            if (fs.existsSync(target)) {
+                target = path.resolve(target)
+
+                if (!fs.existsSync(destination)) {
+                    destination = path.resolve(destination)
+
+                    fs.symlink(target, destination, option, (err) => {
+                        if (err)
+                            console.log(err);
+                        else
+                            console.log("symlink added: ", target);
+                    })
+
+                }
+            }
+        }
+    }
+}
+
+module.exports = { ModuleGenerator, fileUploader, SymlinkCreator };
