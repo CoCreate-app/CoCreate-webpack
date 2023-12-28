@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.1.0...v1.2.0) (2023-12-28)
+
+
+### Features
+
+* symlinkCreator ([5697054](https://github.com/CoCreate-app/CoCreate-webpack/commit/5697054b547e3a9217c7563f4aca64429db3450b))
+
 # [1.1.0](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.0.1...v1.1.0) (2023-12-28)
 
 
