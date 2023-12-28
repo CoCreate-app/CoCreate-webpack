@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.0.0...v1.0.1) (2023-12-28)
+
+
+### Bug Fixes
+
+* removed  webpack.config ([4d3b7de](https://github.com/CoCreate-app/CoCreate-webpack/commit/4d3b7def7b59c0736cbf9b2dbb3e40585486cf92))
+
 # 1.0.0 (2023-12-28)
 
 
