@@ -58,28 +58,33 @@ class ModuleGenerator {
 }
 
 class fileUploader {
-    constructor(env) {
+    constructor(env, argv) {
         this.env = env;
         this.isWatching = false;
+        this.isWatch = argv.watch === true;
     }
 
     apply(compiler) {
-        if (this.env.beforeCompilation) {
-            // Directly perform upload here
-            upload(process.cwd(), ['../', '-w']);
-        }
+        if (this.isWatch) {
 
-        if (this.env.afterCompilation) {
-            compiler.hooks.emit.tapAsync('watchFiles', (compilation, callback) => {
-                if (!this.isWatching) {
-                    this.isWatching = true;
-                    upload(process.cwd(), ['../', '-w']);
-                }
-                callback();
-            });
+            if (this.env.beforeCompilation) {
+                // Directly perform upload here
+                upload(process.cwd(), ['../', '-w']);
+            }
+
+            if (this.env.afterCompilation) {
+                compiler.hooks.emit.tapAsync('watchFiles', (compilation, callback) => {
+                    if (!this.isWatching) {
+                        this.isWatching = true;
+                        upload(process.cwd(), ['../', '-w']);
+                    }
+                    callback();
+                });
+            }
         }
     }
 }
+
 
 class SymlinkCreator {
     constructor(options) {
