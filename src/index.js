@@ -57,7 +57,7 @@ class ModuleGenerator {
     }
 }
 
-class fileUploader {
+class FileUploader {
     constructor(env, argv) {
         this.env = env;
         this.isWatching = false;
@@ -121,4 +121,4 @@ class SymlinkCreator {
     }
 }
 
-module.exports = { ModuleGenerator, fileUploader, SymlinkCreator };
+module.exports = { ModuleGenerator, FileUploader, SymlinkCreator };
