@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.2.0...v1.3.0) (2023-12-31)
+
+
+### Bug Fixes
+
+* fileUploader handle argv ([db835c4](https://github.com/CoCreate-app/CoCreate-webpack/commit/db835c4122a2b238b149c19e0451956dc7630b1f))
+* update fileUploader to pascalCase FileUploader ([1507475](https://github.com/CoCreate-app/CoCreate-webpack/commit/15074750a5f9c473841f33654b9890ce01d76e8e))
+
+
+### Features
+
+* loader to handle special characters ([74134a6](https://github.com/CoCreate-app/CoCreate-webpack/commit/74134a6066d50a486a92ca13c7ba33090fdc190a))
+
 # [1.2.0](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.1.0...v1.2.0) (2023-12-28)
 
 
