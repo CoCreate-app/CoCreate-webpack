@@ -4,7 +4,6 @@
   "description": "An intergration with webpack and CoCreateJS.",
   "keywords": [
     "webpack",
-    "chain-functions",
     "cocreate",
     "low-code-framework",
     "no-code-framework",
