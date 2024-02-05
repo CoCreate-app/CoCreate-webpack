@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.0...v1.3.1) (2024-02-05)
+
+
+### Bug Fixes
+
+* Removed https://cdn.cocreate.app/latest/CoCreate.min.css ([2ce1c33](https://github.com/CoCreate-app/CoCreate-webpack/commit/2ce1c33c1f27f5fd0fdadfc053de43193d72f69a))
+
 # [1.3.0](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.2.0...v1.3.0) (2023-12-31)
 
 
