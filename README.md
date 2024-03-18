@@ -1,13 +1,20 @@
 # CoCreate-webpack
 
-A convenient chain handler allows user to chain multiple CoCreate components together. When one action is complete next one will start. The sequence goes untill all webpack completed. Grounded on Vanilla javascript, easily configured using HTML5 attributes and/or JavaScript API. Take it for a spin in our [playground!](https://cocreate.app/docs/webpack)
+CoCreate-webpack is a dynamic module tailored for CoCreate applications, designed to automate and enhance the Webpack experience. It simplifies file watching, chunking, lazy loading, and file uploading via intuitive `CoCreate.config` configurations, streamlining the development process for projects of any scale.
 
 ![minified](https://img.badgesize.io/https://cdn.cocreate.app/webpack/latest/CoCreate-webpack.min.js?style=flat-square&label=minified&color=orange)
 ![gzip](https://img.badgesize.io/https://cdn.cocreate.app/webpack/latest/CoCreate-webpack.min.js?compression=gzip&style=flat-square&label=gzip&color=yellow)
 ![brotli](https://img.badgesize.io/https://cdn.cocreate.app/webpack/latest/CoCreate-webpack.min.js?compression=brotli&style=flat-square&label=brotli)
-![GitHub latest release](https://img.shields.io/github/v/release/CoCreate-app/CoCreate-action?style=flat-square)
-![License](https://img.shields.io/github/license/CoCreate-app/CoCreate-action?style=flat-square)
+![GitHub latest release](https://img.shields.io/github/v/release/CoCreate-app/CoCreate-openai?style=flat-square)
+![License](https://img.shields.io/github/license/CoCreate-app/CoCreate-openai?style=flat-square)
 ![Hiring](https://img.shields.io/static/v1?style=flat-square&label=&message=Hiring&color=blueviolet)
+
+## Features
+
+-   **Automated File Watching**: Monitors file changes, streamlining the development cycle.
+-   **Configurable Chunking**: Leverages `CoCreate.config` for optimized file chunking, enhancing app performance.
+-   **Efficient Lazy Loading**: Implements lazy loading to improve resource management.
+-   **Seamless File Uploading**: Automatically uploads modified files, keeping projects current.
 
 ![CoCreate-webpack](https://cdn.cocreate.app/docs/CoCreate-webpack.gif)
 
