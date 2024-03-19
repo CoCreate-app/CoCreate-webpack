@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.2...v1.3.3) (2024-03-19)
+
+
+### Bug Fixes
+
+* replaced keyword spaces with hyphens and lowercase letters only ([0c27212](https://github.com/CoCreate-app/CoCreate-webpack/commit/0c27212901ce03c6d9d62a8180a3242ad18d6b48))
+
 ## [1.3.2](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.1...v1.3.2) (2024-03-18)
 
 
