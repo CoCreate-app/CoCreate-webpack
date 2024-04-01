@@ -34,6 +34,7 @@ class ModuleGenerator {
                     if (moduleName === 'outputPath' || typeof moduleInfo !== 'object') return;
                     if (moduleInfo.selector) {
                         // Generate lazyLoad statements for modules with selectors
+                        moduleInfo.selector = moduleInfo.selector.replaceAll("'", '"')
                         moduleContent += `lazyLoad('${moduleName}', '${moduleInfo.selector}', () => import(/*webpackChunkName: "${moduleName}-chunk"*/ '${moduleInfo.import}'));\n`;
                     } else {
                         // Generate dependency statements for other modules
