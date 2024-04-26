@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.3...v1.3.4) (2024-04-26)
+
+
+### Bug Fixes
+
+* lazyLoad selector formating ([054f89c](https://github.com/CoCreate-app/CoCreate-webpack/commit/054f89ccde31bd74c62e248c4c5aa00de0bd0d7d))
+
 ## [1.3.3](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.2...v1.3.3) (2024-03-19)
 
 
