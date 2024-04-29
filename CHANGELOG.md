@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.4...v1.3.5) (2024-04-29)
+
+
+### Bug Fixes
+
+* bump cocreate dependencies ([05e8455](https://github.com/CoCreate-app/CoCreate-webpack/commit/05e84559f10ab984e2e1abc880fa5ba720766f37))
+
 ## [1.3.4](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.3...v1.3.4) (2024-04-26)
 
 
