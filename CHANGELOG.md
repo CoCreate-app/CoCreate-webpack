@@ -1,3 +1,11 @@
+## [1.3.6](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.5...v1.3.6) (2024-06-12)
+
+
+### Bug Fixes
+
+* bump cocreate dependencies ([d9f6b20](https://github.com/CoCreate-app/CoCreate-webpack/commit/d9f6b200a8624be3ce53d30db6f952391c4d033c))
+* svg icon class ([9c1014c](https://github.com/CoCreate-app/CoCreate-webpack/commit/9c1014cad45ecfbfe90990d23a821538b832ae7c))
+
 ## [1.3.5](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.4...v1.3.5) (2024-04-29)
 
 
