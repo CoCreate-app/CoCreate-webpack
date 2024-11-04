@@ -1,3 +1,16 @@
+# [1.4.0](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.6...v1.4.0) (2024-11-04)
+
+
+### Bug Fixes
+
+* pretier.config.js and file formating ([8921a99](https://github.com/CoCreate-app/CoCreate-webpack/commit/8921a99579a95ae06e1e24361cee1ac7ca6d2939))
+
+
+### Features
+
+* add prettier.config.js and format files ([924fe7f](https://github.com/CoCreate-app/CoCreate-webpack/commit/924fe7fe931802b0818496e8ac344fab5fe9fffc))
+* add prettier.config.js and format files ([fae1d78](https://github.com/CoCreate-app/CoCreate-webpack/commit/fae1d78c9fa5cf941b24e0b0d90aa9b6c6570218))
+
 ## [1.3.6](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.3.5...v1.3.6) (2024-06-12)
 
 
