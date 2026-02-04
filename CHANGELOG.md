@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.4.2...v1.4.3) (2026-02-04)
+
+
+### Bug Fixes
+
+* update worklow ([291332f](https://github.com/CoCreate-app/CoCreate-webpack/commit/291332ff1824423df5798ca2657b7ff1d1f0a2ed))
+
 ## [1.4.2](https://github.com/CoCreate-app/CoCreate-webpack/compare/v1.4.1...v1.4.2) (2025-05-01)
 
 
