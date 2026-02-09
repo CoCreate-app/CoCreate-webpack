@@ -1,194 +1,214 @@
-// Import 'fs' for file system operations and 'path' for path operations
+/**
+ * @fileoverview Webpack plugins and loaders for the CoCreate ecosystem.
+ * Includes module generation, automated file uploading, and symlink management.
+ */
+
 const fs = require("fs");
 const path = require("path");
 
-// Import 'upload' function from CoCreate CLI to handle uploads
+/**
+ * Import the upload function from CoCreate CLI to handle automated file uploads.
+ * This function synchronizes local changes with the CoCreate cloud environment.
+ */
 const upload = require("@cocreate/cli/src/commands/upload.js");
 
 /**
- * Class representing a Module Generator.
- * Generates module files based on a configuration and applies them to the Webpack compiler.
+ * @class ModuleGenerator
+ * @description A Webpack plugin that dynamically generates a module entry file 
+ * (typically `modules.js`) based on a configuration object. It leverages 
+ * `@cocreate/lazy-loader` for efficient code splitting and dependency management.
  */
 class ModuleGenerator {
-	/**
-	 * Creates an instance of ModuleGenerator.
-	 * @param {Object} modulesConfig - The configuration for the modules.
-	 */
-	constructor(modulesConfig) {
-		this.modulesConfig = modulesConfig;
-	}
+    /**
+     * @constructor
+     * @param {Object} modulesConfig - The configuration for module generation.
+     * @param {Object} [modulesConfig.config] - Direct configuration object.
+     * @param {string} [modulesConfig.configPath] - Path to a CoCreate config file.
+     * @param {string} [modulesConfig.outputPath='./modules.js'] - Destination for the generated file.
+     */
+    constructor(modulesConfig) {
+        /** @type {Object} */
+        this.modulesConfig = modulesConfig;
+    }
 
-	/**
-	 * Apply the module generation process to the Webpack compiler.
-	 * @param {Object} compiler - The Webpack compiler instance.
-	 */
-	apply(compiler) {
-		let CoCreateConfig;
+    /**
+     * @method apply
+     * @description Entry point for the Webpack plugin. Taps into the `beforeCompile` hook.
+     * @param {import('webpack').Compiler} compiler - The Webpack compiler instance.
+     */
+    apply(compiler) {
+        let CoCreateConfig;
 
-		if (typeof this.modulesConfig === "object") {
-			CoCreateConfig = this.modulesConfig.config;
-		} else {
-			try {
-				CoCreateConfig = require(this.modulesConfig.configPath);
-			} catch (error) {
-				console.error("Error loading CoCreate.config.js:", error);
-				throw error; // Stop the compilation process if configuration is critical
-			}
-		}
+        // Resolve configuration source
+        if (typeof this.modulesConfig === "object") {
+            CoCreateConfig = this.modulesConfig.config;
+        } else {
+            try {
+                CoCreateConfig = require(this.modulesConfig.configPath);
+            } catch (error) {
+                console.error("Error loading CoCreate.config.js:", error);
+                throw error;
+            }
+        }
 
-		let modulesGenerated = false;
+        /** @type {boolean} Track if modules have already been generated to avoid redundant writes. */
+        let modulesGenerated = false;
 
-		compiler.hooks.beforeCompile.tapAsync(
-			"CoCreateLazyloader",
-			(params, callback) => {
-				if (modulesGenerated) callback();
-				else {
-					let outputPath =
-						this.modulesConfig.outputPath || "./modules.js"; // Default path for generated module.js
+        compiler.hooks.beforeCompile.tapAsync(
+            "CoCreateLazyloader",
+            (params, callback) => {
+                if (modulesGenerated) {
+                    callback();
+                } else {
+                    const outputPath = this.modulesConfig.outputPath || "./modules.js";
+                    let moduleContent = `import { dependency, lazyLoad } from '@cocreate/lazy-loader';\n\n`;
 
-					// Generate module content based on CoCreateConfig
-					let moduleContent = `import { dependency, lazyLoad } from '@cocreate/lazy-loader';\n\n`;
-					Object.entries(this.modulesConfig).forEach(
-						([moduleName, moduleInfo]) => {
-							if (
-								moduleName === "outputPath" ||
-								typeof moduleInfo !== "object"
-							)
-								return;
+                    // Generate import statements based on module metadata
+                    Object.entries(this.modulesConfig).forEach(
+                        ([moduleName, moduleInfo]) => {
+                            if (moduleName === "outputPath" || typeof moduleInfo !== "object") return;
 
-							if (moduleInfo.selector) {
-								// Generate lazyLoad statements for modules with selectors
-								moduleInfo.selector =
-									moduleInfo.selector.replaceAll("'", '"');
-								moduleContent += `lazyLoad('${moduleName}', '${moduleInfo.selector}', () => import(/*webpackChunkName: "${moduleName}-chunk"*/ '${moduleInfo.import}'));\n`;
-							} else {
-								// Generate dependency statements for other modules
-								moduleContent += `dependency('${moduleName}', import(/*webpackChunkName: "${moduleName}-chunk"*/ '${moduleInfo.import}'));\n`;
-							}
-						}
-					);
+                            if (moduleInfo.selector) {
+                                // Logic for lazy-loading based on DOM selectors
+                                const sanitizedSelector = moduleInfo.selector.replaceAll("'", '"');
+                                moduleContent += `lazyLoad('${moduleName}', '${sanitizedSelector}', () => import(/*webpackChunkName: "${moduleName}-chunk"*/ '${moduleInfo.import}'));\n`;
+                            } else {
+                                // Logic for standard dependencies
+                                moduleContent += `dependency('${moduleName}', import(/*webpackChunkName: "${moduleName}-chunk"*/ '${moduleInfo.import}'));\n`;
+                            }
+                        }
+                    );
 
-					// Write the module content to the specified outputPath
-					fs.writeFile(outputPath, moduleContent, (err) => {
-						if (err) {
-							console.error(`Error writing ${outputPath}:`, err);
-							callback(err); // Handle errors in async hook
-						} else {
-							modulesGenerated = true;
-							console.log(
-								`${outputPath} generated successfully.`
-							);
-							callback(); // Proceed with compilation
-						}
-					});
-				}
-			}
-		);
-	}
+                    // Persist the generated module file to disk
+                    fs.writeFile(outputPath, moduleContent, (err) => {
+                        if (err) {
+                            console.error(`Error writing ${outputPath}:`, err);
+                            callback(err);
+                        } else {
+                            modulesGenerated = true;
+                            console.log(`${outputPath} generated successfully.`);
+                            callback();
+                        }
+                    });
+                }
+            }
+        );
+    }
 }
 
 /**
- * Class to handle file uploads, particularly useful during watch mode.
+ * @class FileUploader
+ * @description Handles automated file uploads to the CoCreate platform, 
+ * primarily intended for use during Webpack's 'watch' mode to sync local changes.
  */
 class FileUploader {
-	/**
-	 * Creates an instance of FileUploader.
-	 * @param {Object} env - The environment variables.
-	 * @param {Object} argv - The arguments provided.
-	 */
-	constructor(env, argv) {
-		this.env = env;
-		this.isWatching = false;
-		this.isWatch = argv.watch === true;
-	}
+    /**
+     * @constructor
+     * @param {Object} env - Environment variables passed from the Webpack CLI.
+     * @param {Object} argv - Command line arguments (used to detect --watch).
+     */
+    constructor(env, argv) {
+        /** @type {Object} */
+        this.env = env;
+        /** @type {boolean} Internal state to prevent multiple upload triggers. */
+        this.isWatching = false;
+        /** @type {boolean} Flag indicating if Webpack is in watch mode. */
+        this.isWatch = argv.watch === true;
+    }
 
-	/**
-	 * Apply the file uploader process to the Webpack compiler.
-	 * @param {Object} compiler - The Webpack compiler instance.
-	 */
-	apply(compiler) {
-		if (this.isWatch) {
-			if (this.env.beforeCompilation) {
-				// Directly perform upload here
-				upload(process.cwd(), ["../", "-w"]);
-			}
+    /**
+     * @method apply
+     * @description Hooks into the compilation process to trigger uploads.
+     * @param {import('webpack').Compiler} compiler - The Webpack compiler instance.
+     */
+    apply(compiler) {
+        if (this.isWatch) {
+            // Optional: Upload files before the first compilation starts
+            if (this.env.beforeCompilation) {
+                upload(process.cwd(), ["../", "-w"]);
+            }
 
-			if (this.env.afterCompilation) {
-				compiler.hooks.emit.tapAsync(
-					"watchFiles",
-					(compilation, callback) => {
-						if (!this.isWatching) {
-							this.isWatching = true;
-							upload(process.cwd(), ["../", "-w"]);
-						}
-						callback();
-					}
-				);
-			}
-		}
-	}
+            // Upload files after assets are emitted to the output directory
+            if (this.env.afterCompilation) {
+                compiler.hooks.emit.tapAsync(
+                    "watchFiles",
+                    (compilation, callback) => {
+                        if (!this.isWatching) {
+                            this.isWatching = true;
+                            upload(process.cwd(), ["../", "-w"]);
+                        }
+                        callback();
+                    }
+                );
+            }
+        }
+    }
 }
 
 /**
- * Class responsible for creating symbolic links after the build process.
+ * @class SymlinkCreator
+ * @description A utility plugin that creates symbolic links after the build process.
+ * This is used to map PWA assets and distribution folders to the project root.
  */
 class SymlinkCreator {
-	/**
-	 * Creates an instance of SymlinkCreator.
-	 * @param {Object} [options] - Optional configurations for symlink creation.
-	 */
-	constructor(options) {
-		// Store options if necessary, or just hard-code paths
-	}
+    /**
+     * @constructor
+     * @param {Object} [options] - Configuration options for symlink behavior.
+     */
+    constructor(options) {
+        /** @type {Object|undefined} */
+        this.options = options;
+    }
 
-	/**
-	 * Apply the symlink creation process to the Webpack compiler.
-	 * @param {Object} compiler - The Webpack compiler instance.
-	 */
-	apply(compiler) {
-		// Use compiler.hooks to tap into the Webpack build process
-		compiler.hooks.afterEmit.tap("SymlinkPlugin", (compilation) => {
-			// Perform symlink operations here
-			symlink("./dist", "../dist", "dir");
-			symlink(
-				"./node_modules/@cocreate/pwa/src/service-worker.js",
-				"../service-worker.js",
-				"file"
-			);
-			symlink(
-				"./node_modules/@cocreate/pwa/src/manifest.webmanifest",
-				"../manifest.webmanifest",
-				"file"
-			);
-			symlink(
-				"./node_modules/@cocreate/pwa/src/offline.html",
-				"../offline.html",
-				"file"
-			);
-		});
+    /**
+     * @method apply
+     * @description Taps into the `afterEmit` hook to create symlinks once files are generated.
+     * @param {import('webpack').Compiler} compiler - The Webpack compiler instance.
+     */
+    apply(compiler) {
+        compiler.hooks.afterEmit.tap("SymlinkPlugin", (compilation) => {
+            // Standard symlink mappings for CoCreate PWA structure
+            this.createSymlink("./dist", "../dist", "dir");
+            this.createSymlink("./node_modules/@cocreate/pwa/src/service-worker.js", "../service-worker.js", "file");
+            this.createSymlink("./node_modules/@cocreate/pwa/src/manifest.webmanifest", "../manifest.webmanifest", "file");
+            this.createSymlink("./node_modules/@cocreate/pwa/src/offline.html", "../offline.html", "file");
+        });
+    }
 
-		/**
-		 * Function to create a symlink if the target exists and the destination does not.
-		 * @param {string} target - Path to the target.
-		 * @param {string} destination - Path to the destination.
-		 * @param {string} option - Type of symlink ('file' or 'dir').
-		 */
-		function symlink(target, destination, option) {
-			if (fs.existsSync(target)) {
-				target = path.resolve(target);
-
-				if (!fs.existsSync(destination)) {
-					destination = path.resolve(destination);
-
-					fs.symlink(target, destination, option, (err) => {
-						if (err) console.log(err);
-						else console.log("symlink added: ", target);
-					});
-				}
-			}
-		}
-	}
+    /**
+     * @method createSymlink
+     * @description Helper method to safely create a symlink if the target exists and the destination is free.
+     * @param {string} target - The source path (relative or absolute).
+     * @param {string} destination - The target link path (relative or absolute).
+     * @param {string} type - The type of symlink ('file', 'dir', or 'junction').
+     */
+    createSymlink(target, destination, type) {
+        if (fs.existsSync(target)) {
+            const absoluteTarget = path.resolve(target);
+            if (!fs.existsSync(destination)) {
+                const absoluteDestination = path.resolve(destination);
+                fs.symlink(absoluteTarget, absoluteDestination, type, (err) => {
+                    if (err) {
+                        console.error(`Failed to create symlink at ${destination}:`, err);
+                    } else {
+                        console.log(`Symlink created: ${target} -> ${destination}`);
+                    }
+                });
+            }
+        }
+    }
 }
 
-// Export the defined classes so they can be used in other modules or configurations
-module.exports = { ModuleGenerator, FileUploader, SymlinkCreator };
+/**
+ * @exports
+ * @property {ModuleGenerator} ModuleGenerator - Dynamic module builder plugin.
+ * @property {FileUploader} FileUploader - CLI upload integration plugin.
+ * @property {SymlinkCreator} SymlinkCreator - PWA/dist symlink management plugin.
+ * @property {string} UnicodeLoader - Absolute path to the unicode replacement loader.
+ */
+module.exports = { 
+    ModuleGenerator, 
+    FileUploader, 
+    SymlinkCreator, 
+    UnicodeLoader: path.resolve(__dirname, 'replace-unicode.js') 
+};
