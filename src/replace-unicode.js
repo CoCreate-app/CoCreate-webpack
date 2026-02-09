@@ -1,6 +1,9 @@
 module.exports = function (source) {
-    return source.replace(/\$'/g, '\\u0024\'');
+    let modifiedSource = source.replace(/\$'/g, '\\u0024\'');
+    // console.log("Modified source code:", modifiedSource);
+    return modifiedSource;
 
+    
     // const specialChars = /[\0\x08\x09\x1a\n\r"'\\\%\$]/g; // Add or remove characters based on your needs
     // const replacements = {
     //     // "\0": "\\0",
